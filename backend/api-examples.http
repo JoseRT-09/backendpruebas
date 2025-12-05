@@ -1,0 +1,279 @@
+### Variables
+@baseUrl = http://localhost:3000/api
+@adminToken = your_admin_token_here
+@residentToken = your_resident_token_here
+
+### Health Check
+GET http://localhost:3000/health
+
+### ========================================
+### AUTHENTICATION
+### ========================================
+
+### Login as Admin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@residence.com",
+  "password": "admin123"
+}
+
+### Login as Resident
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "juan.perez@example.com",
+  "password": "resident123"
+}
+
+### Register New User
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "Test",
+  "lastName": "User",
+  "email": "test@example.com",
+  "password": "test123",
+  "phone": "+1234567899",
+  "role": "RESIDENT"
+}
+
+### ========================================
+### USERS
+### ========================================
+
+### Get All Users (Admin Only)
+GET {{baseUrl}}/users
+Authorization: Bearer {{adminToken}}
+
+### Get Current User Profile
+GET {{baseUrl}}/users/profile
+Authorization: Bearer {{residentToken}}
+
+### Update Current User Profile
+PUT {{baseUrl}}/users/profile
+Authorization: Bearer {{residentToken}}
+Content-Type: application/json
+
+{
+  "firstName": "Juan Updated",
+  "phone": "+1234567891"
+}
+
+### Create User (Admin Only)
+POST {{baseUrl}}/users
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "firstName": "New",
+  "lastName": "Resident",
+  "email": "new.resident@example.com",
+  "password": "resident123",
+  "phone": "+1234567894",
+  "role": "RESIDENT"
+}
+
+### ========================================
+### RESIDENCES
+### ========================================
+
+### Get All Residences
+GET {{baseUrl}}/residences
+Authorization: Bearer {{residentToken}}
+
+### Get Available Residences
+GET {{baseUrl}}/residences/available
+Authorization: Bearer {{residentToken}}
+
+### Get Residence by ID
+GET {{baseUrl}}/residences/1
+Authorization: Bearer {{residentToken}}
+
+### Create Residence (Admin Only)
+POST {{baseUrl}}/residences
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Apartamento 404",
+  "address": "Av. Principal 123, Edificio Torre A",
+  "floor": 4,
+  "apartmentNumber": "404",
+  "squareMeters": 100.0,
+  "bedrooms": 3,
+  "bathrooms": 2,
+  "status": "AVAILABLE",
+  "monthlyRent": 1600.00,
+  "description": "Nuevo apartamento en el cuarto piso"
+}
+
+### Update Residence (Admin Only)
+PUT {{baseUrl}}/residences/1
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "status": "OCCUPIED"
+}
+
+### ========================================
+### AMENITIES
+### ========================================
+
+### Get All Amenities
+GET {{baseUrl}}/amenities
+Authorization: Bearer {{residentToken}}
+
+### Get Available Amenities
+GET {{baseUrl}}/amenities/available
+Authorization: Bearer {{residentToken}}
+
+### Create Amenity (Admin Only)
+POST {{baseUrl}}/amenities
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Cancha de Tenis",
+  "description": "Cancha de tenis profesional",
+  "location": "Área deportiva",
+  "capacity": 4,
+  "isAvailable": true,
+  "openingTime": "06:00:00",
+  "closingTime": "22:00:00"
+}
+
+### Update Amenity (Admin Only)
+PUT {{baseUrl}}/amenities/1
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "isAvailable": false
+}
+
+### ========================================
+### ACTIVITIES
+### ========================================
+
+### Get All Activities
+GET {{baseUrl}}/activities
+Authorization: Bearer {{residentToken}}
+
+### Get Upcoming Activities
+GET {{baseUrl}}/activities/upcoming
+Authorization: Bearer {{residentToken}}
+
+### Create Activity (Admin Only)
+POST {{baseUrl}}/activities
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "title": "Clase de Zumba",
+  "description": "Clase de baile y ejercicio",
+  "date": "2025-12-20",
+  "startTime": "18:00:00",
+  "endTime": "19:00:00",
+  "location": "Salón de Eventos",
+  "capacity": 25,
+  "availableSpots": 25,
+  "isActive": true
+}
+
+### Update Activity (Admin Only)
+PUT {{baseUrl}}/activities/1
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "availableSpots": 14
+}
+
+### ========================================
+### REPORTS
+### ========================================
+
+### Get All Reports (Admin sees all, Resident sees own)
+GET {{baseUrl}}/reports
+Authorization: Bearer {{residentToken}}
+
+### Get Report by ID
+GET {{baseUrl}}/reports/1
+Authorization: Bearer {{residentToken}}
+
+### Create Report (Any authenticated user)
+POST {{baseUrl}}/reports
+Authorization: Bearer {{residentToken}}
+Content-Type: application/json
+
+{
+  "title": "Ascensor averiado",
+  "description": "El ascensor del edificio A no funciona desde esta mañana",
+  "category": "Mantenimiento",
+  "priority": "HIGH",
+  "residenceId": 2
+}
+
+### Update Report (Admin can update all, Resident only description)
+PUT {{baseUrl}}/reports/1
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "status": "RESOLVED",
+  "responseMessage": "Se ha reparado la calefacción. Problema resuelto."
+}
+
+### ========================================
+### PAYMENTS
+### ========================================
+
+### Get All Payments (Admin sees all, Resident sees own)
+GET {{baseUrl}}/payments
+Authorization: Bearer {{residentToken}}
+
+### Get Pending Payments
+GET {{baseUrl}}/payments/pending
+Authorization: Bearer {{residentToken}}
+
+### Get Payment by ID
+GET {{baseUrl}}/payments/1
+Authorization: Bearer {{residentToken}}
+
+### Create Payment (Admin Only)
+POST {{baseUrl}}/payments
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "userId": 2,
+  "residenceId": 2,
+  "amount": 1500.00,
+  "type": "RENT",
+  "dueDate": "2026-01-01",
+  "description": "Renta de enero 2026"
+}
+
+### Mark Payment as Paid (Resident)
+PUT {{baseUrl}}/payments/3
+Authorization: Bearer {{residentToken}}
+Content-Type: application/json
+
+{
+  "status": "PAID",
+  "transactionId": "TXN-2025-12-003"
+}
+
+### Update Payment Status (Admin)
+PUT {{baseUrl}}/payments/3
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "status": "OVERDUE"
+}
